@@ -1,20 +1,32 @@
-import { useState } from 'react';
-import { useGetTreatmentsQuery, useAddTreatmentMutation, useGetAppointmentsQuery } from '../store/api';
+import { useState } from "react";
+import {
+  useGetTreatmentsQuery,
+  useAddTreatmentMutation,
+  useGetAppointmentsQuery,
+} from "../store/api";
 
 function formatMoney(v) {
   const n = Number(v);
   if (Number.isNaN(n)) return String(v);
-  return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(n);
+  return new Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: "RUB",
+  }).format(n);
 }
 
 export default function TreatmentsPage() {
-  const { data: treatments = [], isLoading, isError, error } = useGetTreatmentsQuery();
+  const {
+    data: treatments = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetTreatmentsQuery();
   const { data: appointments = [] } = useGetAppointmentsQuery();
   const [addTreatment, { isLoading: isAdding }] = useAddTreatmentMutation();
 
-  const [appointmentId, setAppointmentId] = useState('');
-  const [description, setDescription] = useState('');
-  const [cost, setCost] = useState('');
+  const [appointmentId, setAppointmentId] = useState("");
+  const [description, setDescription] = useState("");
+  const [cost, setCost] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,13 +36,13 @@ export default function TreatmentsPage() {
       await addTreatment({
         appointment_id: aid,
         description: description.trim(),
-        cost: cost === '' ? 0 : Number(cost),
+        cost: cost === "" ? 0 : Number(cost),
       }).unwrap();
-      setAppointmentId('');
-      setDescription('');
-      setCost('');
+      setAppointmentId("");
+      setDescription("");
+      setCost("");
     } catch (_) {
-      alert('Не удалось сохранить лечение');
+      alert("Не удалось сохранить лечение");
     }
   }
 
@@ -38,14 +50,23 @@ export default function TreatmentsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-clinic-900">Лечение</h1>
-        <p className="mt-1 text-sm text-slate-600">Услуги и стоимость по приёмам</p>
+        <p className="mt-1 text-sm text-slate-600">
+          Услуги и стоимость по приёмам
+        </p>
       </div>
 
       <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-slate-800">Добавить запись о лечении</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
+        <h2 className="mb-4 text-lg font-semibold text-slate-800">
+          Добавить запись о лечении
+        </h2>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end"
+        >
           <div className="min-w-[220px] flex-1">
-            <label className="mb-1 block text-xs font-medium text-slate-600">Приём</label>
+            <label className="mb-1 block text-xs font-medium text-slate-600">
+              Приём
+            </label>
             <select
               className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-clinic-600 focus:outline-none focus:ring-1 focus:ring-clinic-600"
               value={appointmentId}
@@ -55,14 +76,18 @@ export default function TreatmentsPage() {
               <option value="">Выберите приём</option>
               {appointments.map((a) => (
                 <option key={a.appointment_id} value={a.appointment_id}>
-                  #{a.appointment_id} —{' '}
-                  {a.visit_date ? new Date(a.visit_date).toLocaleString('ru-RU') : ''}
+                  #{a.appointment_id} —{" "}
+                  {a.visit_date
+                    ? new Date(a.visit_date).toLocaleString("ru-RU")
+                    : ""}
                 </option>
               ))}
             </select>
           </div>
           <div className="min-w-[200px] flex-[2]">
-            <label className="mb-1 block text-xs font-medium text-slate-600">Описание</label>
+            <label className="mb-1 block text-xs font-medium text-slate-600">
+              Описание
+            </label>
             <input
               className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-clinic-600 focus:outline-none focus:ring-1 focus:ring-clinic-600"
               value={description}
@@ -72,7 +97,9 @@ export default function TreatmentsPage() {
             />
           </div>
           <div className="w-full sm:w-36">
-            <label className="mb-1 block text-xs font-medium text-slate-600">Стоимость (₽)</label>
+            <label className="mb-1 block text-xs font-medium text-slate-600">
+              Стоимость (₽)
+            </label>
             <input
               type="number"
               min="0"
@@ -92,7 +119,9 @@ export default function TreatmentsPage() {
           </button>
         </form>
         {appointments.length === 0 && (
-          <p className="mt-3 text-sm text-amber-700">Сначала создайте приём на странице «Приёмы».</p>
+          <p className="mt-3 text-sm text-amber-700">
+            Сначала создайте приём на странице «Приёмы».
+          </p>
         )}
       </section>
 
@@ -103,7 +132,7 @@ export default function TreatmentsPage() {
         {isLoading && <p className="p-4 text-sm text-slate-500">Загрузка…</p>}
         {isError && (
           <p className="p-4 text-sm text-red-600">
-            Ошибка загрузки: {error?.data?.error || error?.message || 'сеть'}
+            Ошибка загрузки: {error?.data?.error || error?.message || "сеть"}
           </p>
         )}
         {!isLoading && !isError && (
@@ -120,13 +149,19 @@ export default function TreatmentsPage() {
               <tbody>
                 {treatments.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-4 py-6 text-center text-slate-500">
+                    <td
+                      colSpan={4}
+                      className="px-4 py-6 text-center text-slate-500"
+                    >
                       Нет записей
                     </td>
                   </tr>
                 ) : (
                   treatments.map((t) => (
-                    <tr key={t.treatment_id} className="border-t border-slate-100 hover:bg-slate-50">
+                    <tr
+                      key={t.treatment_id}
+                      className="border-t border-slate-100 hover:bg-slate-50"
+                    >
                       <td className="px-4 py-2">{t.treatment_id}</td>
                       <td className="px-4 py-2">#{t.appointment_id}</td>
                       <td className="px-4 py-2">{t.description}</td>
