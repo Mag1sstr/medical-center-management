@@ -98,7 +98,7 @@ export default function TreatmentsPage() {
           </div>
           <div className="w-full sm:w-36">
             <label className="mb-1 block text-xs font-medium text-slate-600">
-              Стоимость (₽)
+              Стоимость (тг.)
             </label>
             <input
               type="number"
